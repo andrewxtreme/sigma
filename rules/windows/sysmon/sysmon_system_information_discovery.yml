@@ -1,0 +1,35 @@
+title: System Information Discovery
+status: experimental
+description: An adversary may attempt to get detailed information about the operating system and hardware, including version, patches, hotfixes, service packs, and architecture
+references:
+    - https://attack.mitre.org/wiki/Technique/T1082
+date: 14-Sep-2018
+author: Andrew Eggleton
+logsource:
+   product: windows
+   service: sysmon
+detection:
+   selection:
+      EventID: 1
+      Image:
+        - '*\cmd.exe'
+        - '*\powershell.exe'
+      CommandLine:
+        - 'dir*'
+        - 'ver'
+        - 'set*'
+        - 'hostname'
+        - 'systeminfo'
+        - 'whoami*'
+    condition: selection
+fields:
+    - CommandLine
+    - ParentCommandLine
+   condition: selection
+tags:
+    - attack.discovery
+    - attack.t1082
+    - attack.g0040
+falsepositives:
+   - There are many legitimate reasons for administrators to be using these commands; however, look at event time and other relevant telltale signs of unusual behaviour
+level: low
